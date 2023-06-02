@@ -29,7 +29,9 @@ def export_results(seq_list, tbl_dict):
     import pandas as pd
     from pathlib import Path
 
-    output_folder = str(Path.cwd().parent.parent) + r"\results"
+    # Generic output folder for standard input/output processing
+    output_folder = r"C:\TestStand Results"
+    Path(output_folder).mkdir(parents=True, exist_ok=True)
 
     for seq_name in seq_list:
         filename = seq_name + ".csv"
