@@ -12,8 +12,14 @@ NOTE: Python packages should be installed with `poetry install` command for curr
 
 [tool.poetry.dependencies]
 python = "^3.10"
+
 pyodbc = "^4.0.35"
+
 pandas = "^2.0.0"
+
 isort = "^5.12.0"
+
 dash = "^2.9.3"
+
 requests = "^2.28.2"
+
