@@ -8,9 +8,12 @@ However, extracting the data for analysis is more cumbersome than just exporting
 NOTE: Use the Test Reports when looking at data for a small number of tests - they are already formatted for viewing.
 
 # Prerequisites
-NOTE: Python packages can be installed with `pip -r requirements.txt`
+NOTE: Python packages should be installed with `poetry install` command for current pyproject.toml
 
-* [Python 3.7+](www.python.org)
-* [JupyterLab](jupyter.org) Only needed for original jupyter notebook
-* [pyodbc](https://github.com/mkleehammer/pyodbc)
-* [pandas](pandas.pydata.org)
+[tool.poetry.dependencies]
+python = "^3.10"
+pyodbc = "^4.0.35"
+pandas = "^2.0.0"
+isort = "^5.12.0"
+dash = "^2.9.3"
+requests = "^2.28.2"
