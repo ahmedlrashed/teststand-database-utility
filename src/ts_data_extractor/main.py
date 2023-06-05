@@ -11,6 +11,7 @@ ts_db.main()
 
 # ======================== Dash App
 app = dash.Dash(__name__)
+server = app.server
 
 # ======================== Generic Test Results directory (for universal reuse)
 output_folder = r"C:\TestStand Results"
