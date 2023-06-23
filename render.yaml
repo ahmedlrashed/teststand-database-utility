@@ -3,6 +3,6 @@ services:
     name: flask-poetry
     env: python
     plan: starter
-    buildCommand: poetry install
-    startCommand: gunicorn app:app --chdir ./poetry_flask
+    buildCommand: pip install --upgrade pip; pip install poetry; /opt/render/project/src/.venv/bin/poetry install
+    startCommand: gunicorn main:app --host 0.0.0.0 --port 10000
     autoDeploy: false
