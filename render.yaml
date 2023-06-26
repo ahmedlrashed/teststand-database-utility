@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: flask-poetry
-    env: python
-    plan: starter
-    buildCommand: pip install --upgrade pip; pip install poetry; /opt/render/project/src/.venv/bin/poetry install
-    startCommand: gunicorn main:app
-    autoDeploy: false
