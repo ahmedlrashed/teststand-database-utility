@@ -71,28 +71,28 @@ def create_table_dict(seq_list):
 def query_uut_runs(crsr):
     """Query UUT_Results Table"""
 
-    from tkinter import simpledialog
+    # from tkinter import simpledialog
 
-    # Get all desired test runs filtered by start-date and optional user-name
-    start_date = simpledialog.askstring(
-        "OPTIONAL FILTER",
-        "Enter start-date filter with format\nYYYY-MM-DD HH:mm\n(leave blank to get all dates) ::",
-    )
-    user_name = simpledialog.askstring(
-        "OPTIONAL FILTER", "Enter user-name filter\n(leave blank to get all users) ::"
-    )
+    # # Get all desired test runs filtered by start-date and optional user-name
+    # start_date = simpledialog.askstring(
+    #     "OPTIONAL FILTER",
+    #     "Enter start-date filter with format\nYYYY-MM-DD HH:mm\n(leave blank to get all dates) ::",
+    # )
+    # user_name = simpledialog.askstring(
+    #     "OPTIONAL FILTER", "Enter user-name filter\n(leave blank to get all users) ::"
+    # )
 
     sql_string = (
         "SELECT ID, STATION_ID, START_DATE_TIME, EXECUTION_TIME, TEST_SOCKET_INDEX, UUT_SERIAL_NUMBER, UUT_STATUS "
         "FROM UUT_RESULT "
         "WHERE UUT_STATUS <> 'Terminated' and STATION_ID is not NULL"
     )
-
-    if start_date:
-        sql_string += " WHERE START_DATE_TIME >= #{}#".format(start_date)
-
-    if user_name:
-        sql_string += " AND USER_LOGIN_NAME = '{}'".format(user_name)
+    #
+    # if start_date:
+    #     sql_string += " WHERE START_DATE_TIME >= #{}#".format(start_date)
+    #
+    # if user_name:
+    #     sql_string += " AND USER_LOGIN_NAME = '{}'".format(user_name)
 
     sql_string += " ORDER BY START_DATE_TIME, TEST_SOCKET_INDEX"
 

@@ -17,10 +17,13 @@ from database import *
 from file_io import *
 
 
-def main():
+def main(db_filename):
+    # Select TS_database file to process --deprecated
+    # db_filename = import_source()
 
-    # Load and set up the dataset
-    db_filename = import_source()
+    """Execute core python script to decompose input TestStand database file <db_filename>"""
+
+    # Connect, clean, and extract dataset passed in as parameter
     crsr = connect_odbc(db_filename)
     sequence_calls = query_seq_calls(crsr)
     seq_list = create_sequence_list(sequence_calls)
@@ -30,7 +33,7 @@ def main():
     # Generate test results table by sequence name (save to memory)
     generate_test_table(crsr, uut_runs, tbl_dict, sequence_calls)
 
-    # Export test results in memory to CSV files
+    # Export test results in memory to CSV files --deprecated
     export_results(seq_list, tbl_dict)
 
 

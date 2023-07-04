@@ -45,12 +45,3 @@ def export_results(seq_list, tbl_dict):
             output_file, mode="a", index=False, header=write_header
         )
         # print(f"---- {seq_name} exported ----")
-
-
-def export_data_tables(seq_list, tbl_dict):
-    """Export each output table as a dataframe to GUI panel"""
-
-    import pandas as pd
-
-    for seq_name in seq_list:
-        pd.DataFrame.from_records(tbl_dict[f"{seq_name}"])
