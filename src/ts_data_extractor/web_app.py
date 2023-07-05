@@ -17,7 +17,7 @@ if not os.path.exists(upload_folder):
     os.mkdir(upload_folder)
 
 # Set maximum size of the file
-app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
+app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024
 
 # Configure the upload folder
 app.config["UPLOAD_FOLDER"] = upload_folder

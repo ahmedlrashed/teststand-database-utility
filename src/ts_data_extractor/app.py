@@ -1,21 +1,69 @@
-# ======================== Import libraries
+# importing the required libraries
+import os
 import pathlib
 
-import dash
 import pandas as pd
-from dash import dcc, Input, Output, html, dash_table
-import base64
-import io
+from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
 
 import ts_db
 
-# ======================== Generate dataset from ts_db.py script
-"""Open TestStand database (.mdb) when user clicks { Download } button """
+# Initialize the flask app
+app = Flask(__name__)
 
-# ======================== Dash App
-app = dash.Dash(__name__, prevent_initial_callbacks=True)
-server = app.server
+# Create the upload folder
+upload_folder = "uploads/"
+if not os.path.exists(upload_folder):
+    os.mkdir(upload_folder)
 
+# Set maximum size of the file
+app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024
+
+# Configure the upload folder
+app.config["UPLOAD_FOLDER"] = upload_folder
+
+# Configure the allowed extensions
+allowed_extensions = ["mdb"]
+
+
+def check_file_extension(filename):
+    return filename.split(".")[-1] in allowed_extensions
+
+
+# Start page for web app
+@app.route("/")
+def index():
+    return render_template("upload.html")
+
+
+# Result page after user selects file to upload
+@app.route("/upload", methods=["GET", "POST"])
+def upload_file():
+    if request.method == "POST":  # check if the method is post
+        f = request.files["file"]  # get the file from the files object
+
+        # Saving the file in the required destination
+        if check_file_extension(f.filename):
+            db_filepath = os.path.join(
+                app.config["UPLOAD_FOLDER"], secure_filename(f.filename)
+            )
+            f.save(db_filepath)  # this will secure the file
+
+            # Execute core python script to decompose the TestStand database file
+            csv_file_count = ts_db.main(db_filepath)
+
+            # Purge uploads folder after script is finished
+            for file in os.listdir(upload_folder):
+                if file.endswith(".mdb"):
+                    os.remove(os.path.join(upload_folder, file))
+
+            return f"MDB processed:: {csv_file_count} CSV files exported to C:\\TestStand Results"
+
+        else:
+            return "The file extension is not allowed"
+
+
+# After core python script runs, display exported CSV files in dropdown menu and table
 output_folder = r"C:\TestStand Results"
 file_paths = []
 
@@ -23,92 +71,10 @@ for p in pathlib.Path(output_folder).glob("*.csv"):
     if p.is_file():
         file_paths.append(p.resolve().as_posix())
 
-# ======================== App Layout
-title = html.H1(
-    "TestStand Database Utility",
-    style={"text-align": "center", "background-color": "#ede9e8"},
-)
-upload = html.Div(
-    dcc.Upload(
-        id="upload-data",
-        children=html.Div(
-            ["Drag and Drop or ", html.A("Select TestStand .mdb File to Process")]
-        ),
-        style={
-            "width": "95%",
-            "height": "60px",
-            "lineHeight": "60px",
-            "borderWidth": "3px",
-            "borderStyle": "dashed",
-            "borderRadius": "10px",
-            "textAlign": "center",
-            "margin": "20px",
-        },
-    ),
-)
-output_data = html.Div(id="output-data-upload")
-dropdown = html.Div(
-    dcc.Dropdown(
-        id="dropdown_filename",
-        options=[{"label": i, "value": i} for i in file_paths],
-        # options=[],
-        # value=None,
-    )
-)
-data_log = html.Div(id="data_log")
-
-app.layout = html.Div([title, upload, output_data, dropdown, data_log])
-
-
-# ======================== App Callbacks/FileIO
-@app.callback(
-    Output("output-data-upload", "children"),
-    Input("upload-data", "contents"),
-    Input("upload-data", "filename"),
-)
-def import_contents(contents, filename):
-    """Open TestStand database (.mdb) with user prompt"""
-    if "mdb" in filename:
-        # Only allow MS Access MDB file type
-
-        content_type, content_string = contents.split(",")
-        decoded = base64.b64decode(content_string)
-        file_like_object = io.BytesIO(decoded)
-
-        db_filepath = file_like_object
-        print(filename)
-        print(db_filepath)
-
-        """Execute core python script to decompose the TestStand database file"""
-        ts_db.main(db_filepath)
-
-        children = [filename]
-        return children
-
-
-# ======================== App Callbacks/UI
-# @app.callback(
-#     [Output("dropdown", "options")],
-#     [Input('upload-data', 'contents'),
-#      Input('upload-data', 'filename')])
-# )def update_options(contents, filename):
-#     # ======================== Update dropdown menu options based on CSV files generated
 #
-#         lst = file_paths
-#         return lst
+# def update_table(user_select):
+#     ts_table = pd.read_csv(user_select)
 
 
-@app.callback(
-    [Output("data_log", "children")],
-    [Input("dropdown_filename", "value")],
-    prevent_initial_call=True,
-)
-def update_table(user_select):
-    # ======================== Reading Selected csv file
-    ts_table = pd.read_csv(user_select)
-    return [dash_table.DataTable(id="data_tbl", data=ts_table.to_dict("records"))]
-
-
-# ======================== Run  server
 if __name__ == "__main__":
-    app.run_server(debug=True, use_reloader=False)
+    app.run()  # running the flask app
