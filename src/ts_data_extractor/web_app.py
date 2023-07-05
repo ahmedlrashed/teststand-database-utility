@@ -23,7 +23,7 @@ app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
 app.config["UPLOAD_FOLDER"] = upload_folder
 
 # Configure the allowed extensions
-allowed_extensions = ["mdb", "accdb"]
+allowed_extensions = ["mdb"]
 
 
 def check_file_extension(filename):
@@ -51,6 +51,12 @@ def upload_file():
 
             # Execute core python script to decompose the TestStand database file
             csv_file_count = ts_db.main(db_filepath)
+
+            # Purge uploads folder after script is finished
+            for file in os.listdir(upload_folder):
+                if file.endswith(".mdb"):
+                    os.remove(os.path.join(upload_folder, file))
+
             return f"MDB processed:: {csv_file_count} CSV files exported to C:\\TestStand Results"
 
         else:
@@ -65,9 +71,9 @@ for p in pathlib.Path(output_folder).glob("*.csv"):
     if p.is_file():
         file_paths.append(p.resolve().as_posix())
 
-
-def update_table(user_select):
-    ts_table = pd.read_csv(user_select)
+#
+# def update_table(user_select):
+#     ts_table = pd.read_csv(user_select)
 
 
 if __name__ == "__main__":
