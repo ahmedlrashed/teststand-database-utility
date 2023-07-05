@@ -18,9 +18,6 @@ from file_io import *
 
 
 def main(db_filename):
-    # Select TS_database file to process --deprecated
-    # db_filename = import_source()
-
     """Execute core python script to decompose input TestStand database file <db_filename>"""
 
     # Connect, clean, and extract dataset passed in as parameter
@@ -33,8 +30,8 @@ def main(db_filename):
     # Generate test results table by sequence name (save to memory)
     generate_test_table(crsr, uut_runs, tbl_dict, sequence_calls)
 
-    # Export test results in memory to CSV files --deprecated
-    export_results(seq_list, tbl_dict)
+    # Export test results in memory to CSV files and return csv_file_count
+    return export_results(seq_list, tbl_dict)
 
 
 if __name__ == "__main__":
