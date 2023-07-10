@@ -12,7 +12,7 @@ import ts_db
 app = Flask(__name__)
 
 # Create the upload folder
-upload_folder = "uploads/"
+upload_folder = "/opt/render/project/uploads"
 if not os.path.exists(upload_folder):
     os.mkdir(upload_folder)
 
