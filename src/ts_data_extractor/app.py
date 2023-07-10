@@ -1,8 +1,7 @@
 # importing the required libraries
-import os
 import pathlib
+from pathlib import Path
 
-import pandas as pd
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 
@@ -11,10 +10,16 @@ import ts_db
 # Initialize the flask app
 app = Flask(__name__)
 
+# get the current working directory
+current_working_directory = Path.cwd()
+
+# print output to the console
+print(current_working_directory)
+
 # Create the upload folder
-upload_folder = "/opt/render/project/uploads"
-if not os.path.exists(upload_folder):
-    os.mkdir(upload_folder)
+upload_folder = Path(current_working_directory).joinpath("uploads")
+if not Path.exists(upload_folder):
+    Path.mkdir(upload_folder)
 
 # Set maximum size of the file
 app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024
@@ -44,7 +49,7 @@ def upload_file():
 
         # Saving the file in the required destination
         if check_file_extension(f.filename):
-            db_filepath = os.path.join(
+            db_filepath = Path.joinpath(
                 app.config["UPLOAD_FOLDER"], secure_filename(f.filename)
             )
             f.save(db_filepath)  # this will secure the file
@@ -52,12 +57,11 @@ def upload_file():
             # Execute core python script to decompose the TestStand database file
             csv_file_count = ts_db.main(db_filepath)
 
-            # Purge uploads folder after script is finished
-            for file in os.listdir(upload_folder):
-                if file.endswith(".mdb"):
-                    os.remove(os.path.join(upload_folder, file))
+            # Purge contents of uploads folder after script is finished
+            for file in Path.iterdir(upload_folder):
+                Path.unlink(Path.joinpath(upload_folder, file))
 
-            return f"MDB processed:: {csv_file_count} CSV files exported to C:\\TestStand Results"
+            return f"MDB has been processed:: {csv_file_count} CSV files exported to C:\\TestStand Results"
 
         else:
             return "The file extension is not allowed"
