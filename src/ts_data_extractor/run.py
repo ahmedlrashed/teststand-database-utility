@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-Purpose
+USE CASE :: This is a modular, multi-file implementation of the python script.
+            Uses custom file_io and database modules.
+
 Extract data from default TestStand database using default Access NI schema.
 Data is converted to CSVs for import into another tool such as Minitab or analyzed in web app.
 

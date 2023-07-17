@@ -1,3 +1,9 @@
+"""
+USE CASE :: This is the top-level web application implementation of the python script.
+            Uses custom file_io and database modules.
+            Calls the submodule ts_db.py script.
+"""
+
 # importing the required libraries
 import pathlib
 from pathlib import Path
@@ -54,7 +60,9 @@ def upload_file():
             )
             f.save(db_filepath)  # this will secure the file
 
-            # Execute core python script to decompose the TestStand database file
+            # =================================================================== #
+            # Execute core python script to decompose the TestStand database file #
+            # =================================================================== #
             csv_file_count = ts_db.main(db_filepath)
 
             # Purge contents of uploads folder after script is finished
