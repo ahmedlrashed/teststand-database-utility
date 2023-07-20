@@ -27,7 +27,7 @@ def import_source():
 
     # Show an "Open" dialog box and return the path to the selected file
     db_filename = askopenfilename(
-        title="Select TestStand Database File to Open",
+        title="Select TestStand Database File to Process",
         filetypes=(("MS Access", "*.mdb"), ("MS Access", "*.accdb")),
     )
 
@@ -74,7 +74,6 @@ def create_sequence_list(sequence_calls):
     seq_list = []
 
     for sequence in sequence_calls:
-
         # Update raw filepaths to final table names
         sequence[1] = "Test Data " + Path(sequence[1]).stem
 
@@ -133,7 +132,6 @@ def generate_test_table(crsr, uut_runs, tbl_dict, sequence_calls):
     """Construct Test Results Data Table"""
 
     for run in uut_runs:
-
         # Identifying Metadata for each Test Run
         data = {
             "Test Start": run.START_DATE_TIME,
@@ -173,7 +171,6 @@ def generate_test_table(crsr, uut_runs, tbl_dict, sequence_calls):
 
         # Extract, construct, and append Test Data values to key-defined Test Data Tables
         for step in run_steps:
-
             # Convert data to Python types
             val = None
             if step.TYPE_NAME == "Boolean":
@@ -241,6 +238,13 @@ def export_results(seq_list, tbl_dict):
 
     import pandas as pd
     from pathlib import Path
+    from tkinter import Tk, messagebox
+
+    # Prevent the root window from appearing
+    Tk().withdraw()
+
+    message_title = "DB Extraction FAILED"
+    message = ""
 
     # Generic output folder for standard input/output processing
     output_folder = r"C:\TestStand Results"
@@ -257,7 +261,16 @@ def export_results(seq_list, tbl_dict):
         pd.DataFrame.from_records(tbl_dict[f"{seq_name}"]).to_csv(
             output_file, mode="a", index=False, header=write_header
         )
-        # print(f"---- {seq_name} exported ----")
+
+        message += f"-- {filename} was exported to {output_folder} \n"
+
+    if message:
+        message_title = "DB Extraction COMPLETE"
+
+    messagebox.showinfo(
+        f"{message_title}",
+        f"{message}",
+    )
 
 
 def main():
