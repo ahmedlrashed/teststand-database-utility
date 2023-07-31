@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "ts-data-extractor"
-version = "0.1.0"
-description = "Tool to help extract and analyze test data from the default TestStand database."
+version = "1.1.0"
+description = "Tool to extract and decompose test data from the default TestStand database schema into flat CSV files."
 authors = ["Ahmed L Rashed <110828918+ahmedlrashed@users.noreply.github.com>"]
 readme = "README.md"
 packages = [{include = "ts_data_extractor", from = "src"}]
