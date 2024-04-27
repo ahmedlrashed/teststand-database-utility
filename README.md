@@ -24,7 +24,7 @@ With this successful proof-of-concept, our next iteration was to refactor the Ju
 
 After that, we wanted to package our project in a proper manner, so we refactored the *main.py* script into individual modules and sub-modules. *ts_db.py* represents the modular, parameterized, multi-file implementation of the python script. Uses custom file_io and database modules. Called by the *app.py* script. *app.py* is the top-level web application implementation of the python script. Uses custom *file_io* and *database* modules. Calls the submodule *ts_db.py* script.
 
-Our final step was to host the web app on the net. We tried Railway.com, Render.com, and Srreamlit.com. However, the web application approach proved unfeasible because hosted web apps cannot have access to local ODBC, which is a requirement for pyodbc to function properly. 
+Our final step was to host the web app on the net. We tried Railway.com, Render.com, and Streamlit.com. However, the web application approach proved unfeasible because hosted web apps cannot have access to local ODBC, which is a requirement for pyodbc to function properly. 
 
 # Results
 In the end, we went back to our single-file implementation (main.py) and used *auto-py-to-exe* to build a stand-alone executable file that users could download to the test stand machine and run to decompose the .mdb file into its constituent CSV data logs. This executable worked perfectly on different machines, transforming TestStand Database files into their component CSV data logs.
