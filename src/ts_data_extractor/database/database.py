@@ -45,7 +45,6 @@ def create_sequence_list(sequence_calls):
     seq_list = []
 
     for sequence in sequence_calls:
-
         # Update raw filepaths to final table names
         sequence[1] = "Test Data " + Path(sequence[1]).stem
 
@@ -106,7 +105,6 @@ def generate_test_table(crsr, uut_runs, tbl_dict, sequence_calls):
     """Construct Test Results Data Table"""
 
     for run in uut_runs:
-
         # Identifying Metadata for each Test Run
         data = {
             "Test Start": run.START_DATE_TIME,
@@ -146,14 +144,16 @@ def generate_test_table(crsr, uut_runs, tbl_dict, sequence_calls):
 
         # Extract, construct, and append Test Data values to key-defined Test Data Tables
         for step in run_steps:
-
             # Convert data to Python types
             val = None
             if step.TYPE_NAME == "Boolean":
                 val = bool(step.DATA)
 
             elif step.TYPE_NAME == "Number" or step.TYPE_NAME == "NumericLimitTest":
-                val = float(step.DATA)
+                try:
+                    val = float(step.DATA)
+                except ValueError:
+                    print("Data is not a valid number.")
 
             # Extract desired data
             if (
